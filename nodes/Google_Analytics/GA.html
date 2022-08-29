@@ -1,0 +1,596 @@
+<script>
+    let minutesGA = [];
+    for (let index = 0; index < 30; index++) {
+        minutesGA.push({ value: `${index}`, label: `${index} minutes ago` });
+    }
+    const configGA = {
+        trackers: [
+            { value: "UA", label: "UA (Universal Analytics)", title: "" },
+            { value: "GA4", label: "GA4", title: `` },
+        ],
+        versions: {
+            UA: 'v3',
+            GA4: 'v1',
+        },
+        functions: {
+            UA: [
+                { value: "ga", label: "data.ga.get()", title: "" },
+                { value: "rt", label: "data.realtime.get()", title: `` },
+            ],
+            GA4: [
+                { value: "runReport", label: "runReport()", title: "" },
+                { value: "runRealtimeReport", label: "runRealtimeReport()", title: `` },
+            ]
+        },
+        dimensions: {
+            ga: [
+                { value: "", label: "No Dimensions", title: "Without dimensions" },
+                { value: "ga:userType", label: "ga:userType", title: "A boolean, either New Visitor or Returning Visitor, indicating if the users are new or returning." },
+                { value: "ga:sessionCount", label: "ga:sessionCount", title: "The session index for a user." },
+                { value: "ga:source", label: "ga:source", title: "The source of referrals." },
+                { value: "ga:referralPath", label: "ga:referralPath", title: "The path of the referring URL (e.g., document.referrer)." },
+                { value: "ga:socialNetwork", label: "ga:socialNetwork", title: "The social network name. This is related to the referring social network for traffic source." },
+                { value: "ga:deviceCategory", label: "ga:deviceCategory", title: "The type of device: desktop, tablet, or mobile." },
+                { value: "ga:mobileDeviceBranding", label: "ga:mobileDeviceBranding", title: "Mobile manufacturer or branded name." },
+                { value: "ga:browser", label: "ga:browser", title: "The name of users' browsers, for example, Internet Explorer or Firefox." },
+                { value: "ga:operatingSystem", label: "ga:operatingSystem", title: "Users' operating system, for example, Windows, Linux, Macintosh, or iOS." },
+                { value: "ga:country", label: "ga:country", title: "Users' country, derived from their IP addresses or Geographical IDs." },
+                { value: "ga:city", label: "ga:city", title: "Users' city, derived from their IP addresses or Geographical IDs." },
+                { value: "ga:language", label: "ga:language", title: "The language, in ISO-639 code format (e.g., en-gb for British English), provided by the HTTP Request for the browser.ome" },
+                { value: "ga:pagePath", label: "ga:pagePath", title: "sA page on the website specified by path and/or query parameters. Use this with hostname to get the page's full URL.ome" },
+                { value: "ga:pageTitle", label: "ga:pageTitle", title: "The page's title. Multiple pages might have the same page title." },
+                { value: "ga:date", label: "ga:date", title: "The date of the session formatted as YYYYMMDD." },
+                { value: "ga:year", label: "ga:year", title: "Month of the session, a two digit integer from 01 to 12." },
+                { value: "ga:week", label: "ga:week", title: "The week of the session, a two-digit number from 01 to 53. Each week starts on Sunday." },
+                { value: "ga:hour", label: "ga:hour", title: "A two-digit hour of the day ranging from 00-23 in the timezone configGAured for the account" },
+                { value: "ga:userGender", label: "ga:userGender", title: "Gender of users." },
+                { value: "ga:userAgeBracket", label: "ga:userAgeBracket", title: "Age bracket of users." },
+                // more https://ga-dev-tools.web.app/dimensions-metrics-explorer/
+            ],
+            rt: [
+                { value: "", label: "No Dimensions", title: "Without dimensions" },
+
+                { value: "rt:referralPath", label: "rt:referralPath", title: "The path of the referring URL (e.g. document.referrer)." },
+                { value: "rt:source", label: "rt:source", title: "The source of referrals to your property." },
+                { value: "rt:trafficType", label: "rt:trafficType", title: "This dimension is similar to rt:medium for constant values such as organic, referral, direct, etc" },
+                { value: "rt:campaign", label: "rt:campaign", title: "For manual campaign tracking, it is the value of the utm_campaign campaign tracking parameter." },
+                { value: "rt:medium", label: "rt:medium", title: "The type of referrals to your property." },
+
+                // { value: "rt:minutesAgo", label: "rt:minutesAgo", title: "The number of minutes ago a hit occurred."},
+
+                { value: "rt:country", label: "rt:country", title: "sThe countries of website users, derived from IP addresses.ome" },
+                { value: "rt:city", label: "rt:city", title: "The cities of users, derived from IP addresses." },
+
+                { value: "rt:userType", label: "rt:userType (with metric rt:activeUsers)", title: "A string value indicating if a user is new or returning. Possible values are NEW and RETURNING." },
+
+                { value: "rt:pagePath", label: "rt:pagePath (with metric rt:pageviews)", title: "A page on your property specified by path and/or query parameters." },
+                { value: "rt:pageTitle", label: "rt:pageTitle (with metric rt:pageviews)", title: "sThe title of a page. Keep in mind that multiple pages might have the same page title.ome" },
+                // more https://developers.google.com/analytics/devguides/reporting/realtime/dimsmets
+            ],
+            GA4rR: [
+                { value: "", label: "No Dimensions", title: "Without dimensions" },
+                { value: "audienceName", label: "audienceName", title: "The given name of an Audience. Users are reported in the audiences to which they belonged during the report's date range. Current user behavior does not affect historical audience membership in reports." },
+                { value: "audienceId", label: "audienceId", title: "The numeric identifier of an Audience. Users are reported in the audiences to which they belonged during the report's date range. Current user behavior does not affect historical audience membership in reports." },
+                { value: "date", label: "date", title: "The date of the event, formatted as YYYYMMDD." },
+                { value: "year", label: "year", title: "The four-digit year of the event e.g. 2020." },
+                { value: "month", label: "month", title: "The month of the event, a two digit integer from 01 to 12." },
+                { value: "week", label: "week", title: "The week of the event, a two-digit number from 01 to 53." },
+                { value: "day", label: "day", title: "The day of the month, a two-digit number from 01 to 31." },
+                { value: "dayOfWeek", label: "dayOfWeek", title: "	The day of the week. It returns values in the range [0,6] with Sunday as the first day of the week." },
+                { value: "hour", label: "hour", title: "The two-digit hour of the day that the event was logged. This dimension ranges from 0-23 and is reported in your property's timezone." },
+                { value: "minute", label: "minute", title: "The two-digit minute of the hour that the event was logged. This dimension ranges from 0-59 and is reported in your property's timezone." },
+                { value: "country", label: "country", title: "The country from which the user activity originated." },
+                { value: "countryId", label: "countryId", title: "The geographic ID of the country from which the user activity originated, derived from their IP address. Formatted according to ISO 3166-1 alpha-2 standard." },
+                { value: "city", label: "city", title: "The city from which the user activity originated." },
+                { value: "browser", label: "browser", title: "The browsers used to view your website." },
+                { value: "unifiedScreenName", label: "unifiedScreenName", title: "The page title (web) or screen name (app) on which the event was logged." },
+                { value: "pagePath", label: "pagePath", title: "The portion of the URL between the hostname and query string for web pages visited." },
+                { value: "fullPageUrl", label: "fullPageUrl", title: "The hostname, page path, and query string for web pages visited." },
+                { value: "pageReferrer", label: "pageReferrer", title: "The full referring URL including the hostname and path." },
+                { value: "source", label: "source", title: "The source attributed to the conversion event." },
+                { value: "platform", label: "platform", title: "The platform on which your app or website ran; for example, web, iOS, or Android. To determine a stream's type in a report, use both platform and streamId." },
+                { value: "deviceCategory", label: "deviceCategory", title: "The type of device: Desktop, Tablet, or Mobile." },
+                { value: "platformDeviceCategory", label: "platformDeviceCategory", title: "The platform and type of device on which your website or mobile app ran. (example: Android / mobile)." },
+                { value: "appVersion", label: "appVersion", title: "The app's versionName (Android) or short bundle version (iOS)." },
+                // more https://developers.google.com/analytics/devguides/reporting/data/v1/api-schema
+            ],
+            GA4rRR: [
+                { value: "", label: "No Dimensions", title: "Without dimensions" },
+                { value: "audienceName", label: "audienceName", title: "The given name of an Audience. Users are reported in the audiences to which they belonged during the report's date range. Current user behavior does not affect historical audience membership in reports." },
+                { value: "audienceId", label: "audienceId", title: "The numeric identifier of an Audience. Users are reported in the audiences to which they belonged during the report's date range. Current user behavior does not affect historical audience membership in reports." },
+                { value: "minutesAgo", label: "minutesAgo", title: "The number of minutes ago that an event was collected. 00 is the current minute, and 01 means the previous minute." },
+                { value: "unifiedScreenName", label: "unifiedScreenName", title: "The page title (web) or screen name (app) on which the event was logged." },
+                { value: "country", label: "country", title: "The country from which the user activity originated." },
+                { value: "city", label: "city", title: "The city from which the user activity originated." },
+                { value: "deviceCategory", label: "deviceCategory", title: "The type of device: Desktop, Tablet, or Mobile." },
+                { value: "platform", label: "platform", title: "The platform on which your app or website ran; for example, web, iOS, or Android. To determine a stream's type in a report, use both platform and streamId." },
+                { value: "appVersion", label: "appVersion", title: "The app's versionName (Android) or short bundle version (iOS)." },
+                // more https://developers.google.com/analytics/devguides/reporting/data/v1/realtime-api-schema
+            ],
+        },
+        metrics: {
+            ga: [
+                { value: "", label: "No Metrics", title: "Without Metrics." },
+                { value: "ga:pageviews", label: "ga:pageviews", title: "The total number of pageviews for the property." },
+                { value: "ga:users", label: "ga:users", title: "The total number of users for the requested time period." },
+                { value: "ga:newUsers", label: "ga:newUsers", title: "The number of sessions marked as a user's first sessions." },
+                { value: "ga:sessionsPerUser", label: "ga:sessionsPerUser", title: "The total number of sessions divided by the total number of users." },
+                { value: "ga:sessions", label: "ga:sessions", title: "The total number of sessions." },
+                { value: "ga:organicSearches", label: "ga:organicSearches", title: "The number of organic searches happened in a session. This metric is search engine agnostic." },
+                { value: "ga:avgPageLoadTime", label: "ga:avgPageLoadTime", title: "The average time (in seconds) pages from the sample set take to load, from initiation of the pageview (e.g., a click on a page link) to load completion in the browser." },
+                { value: "ga:pageLoadTime", label: "ga:pageLoadTime", title: "Total time (in milliseconds), from pageview initiation (e.g., a click on a page link) to page load completion in the browser, the pages in the sample set take to load." },
+                // more https://ga-dev-tools.web.app/dimensions-metrics-explorer/
+            ],
+            rt: [
+                { value: "", label: "No Metrics", title: "Without Metrics." },
+                { value: "rt:activeUsers", label: "rt:activeUsers", title: "The number of users interacting with the property right now." },
+                { value: "rt:pageviews", label: "rt:pageviews", title: "The total number of page views." },
+                { value: "rt:screenViews", label: "rt:screenViews", title: "The total number of screen views." },
+                // more https://developers.google.com/analytics/devguides/reporting/realtime/dimsmets
+            ],
+            GA4rR: [
+                { value: "", label: "No Metrics", title: "Without Metrics." },
+                { value: "activeUsers", label: "activeUsers", title: "The number of distinct users who visited your site or app." },
+                { value: "active1DayUsers", label: "active1DayUsers", title: "The number of distinct active users on your site or app within a 1 day period." },
+                { value: "active7DayUsers", label: "active7DayUsers", title: "The number of distinct active users on your site or app within a 7 day period. The 7 day period includes the last day in the report's date range." },
+                { value: "newUsers", label: "newUsers", title: "The number of users who interacted with your site or launched your app for the first time (event triggered: first_open or first_visit)." },
+                { value: "screenPageViews", label: "screenPageViews", title: "The number of app screens or web pages your users viewed. Repeated views of a single page or screen are counted. (screen_view + page_view events)." },
+                { value: "sessions", label: "sessions", title: "The number of sessions that began on your site or app (event triggered: session_start)." },
+                { value: "sessionsPerUser", label: "sessionsPerUser", title: "The average number of sessions per user (Sessions divided by Active Users)." },
+                { value: "conversions", label: "conversions", title: "The count of conversion events." },
+                { value: "eventCount", label: "eventCount", title: "The count of events." },
+                // more https://developers.google.com/analytics/devguides/reporting/data/v1/api-schema#metrics
+            ],
+            GA4rRR: [
+                { value: "", label: "No Metrics", title: "Without Metrics." },
+                { value: "activeUsers", label: "activeUsers", title: "The number of distinct users who visited your site or app." },
+                { value: "conversions", label: "conversions", title: "The count of conversion events." },
+                { value: "eventCount", label: "eventCount", title: "The count of events." },
+                { value: "screenPageViews", label: "screenPageViews", title: "The number of app screens or web pages your users viewed. Repeated views of a single page or screen are counted. (screen_view + page_view events)." },
+                // more https://developers.google.com/analytics/devguides/reporting/data/v1/realtime-api-schema
+            ],
+        },
+        metricOrderBy: [
+            { value: "", label: "No metric", title: "Without metric order." },
+            { value: "activeUsers", label: "activeUsers", title: "The number of distinct users who visited your site or app." },
+            { value: "conversions", label: "conversions", title: "The count of conversion events." },
+            { value: "eventCount", label: "eventCount", title: "The count of events." },
+            { value: "screenPageViews", label: "screenPageViews", title: "The number of app screens or web pages your users viewed. Repeated views of a single page or screen are counted. (screen_view + page_view events)." },
+            // more https://developers.google.com/analytics/devguides/reporting/data/v1/realtime-api-schema
+        ],
+        dimensionOrderBy: [
+            { value: "", label: "No dimension", title: "Without dimension order" },
+            { value: "audienceName", label: "audienceName", title: "The given name of an Audience. Users are reported in the audiences to which they belonged during the report's date range. Current user behavior does not affect historical audience membership in reports." },
+            { value: "audienceId", label: "audienceId", title: "The numeric identifier of an Audience. Users are reported in the audiences to which they belonged during the report's date range. Current user behavior does not affect historical audience membership in reports." },
+            { value: "minutesAgo", label: "minutesAgo", title: "The number of minutes ago that an event was collected. 00 is the current minute, and 01 means the previous minute." },
+            { value: "unifiedScreenName", label: "unifiedScreenName", title: "The page title (web) or screen name (app) on which the event was logged." },
+            { value: "country", label: "country", title: "The country from which the user activity originated." },
+            { value: "city", label: "city", title: "The city from which the user activity originated." },
+            { value: "deviceCategory", label: "deviceCategory", title: "The type of device: Desktop, Tablet, or Mobile." },
+            { value: "platform", label: "platform", title: "The platform on which your app or website ran; for example, web, iOS, or Android. To determine a stream's type in a report, use both platform and streamId." },
+            { value: "appVersion", label: "appVersion", title: "The app's versionName (Android) or short bundle version (iOS)." },
+            // more https://developers.google.com/analytics/devguides/reporting/data/v1/realtime-api-schema
+        ],
+        dimensionOrderType: [
+            { value: "ORDER_TYPE_UNSPECIFIED", label: "ORDER_TYPE_UNSPECIFIED", title: "Unspecified." },
+            { value: "NUMERIC", label: "NUMERIC", title: `Dimension values are converted to numbers before sorting. For example in NUMERIC sort, "25" < "100", and in ALPHANUMERIC sort, "100" < "25". Non-numeric dimension values all have equal ordering value below all numeric values.` },
+            { value: "ALPHANUMERIC", label: "ALPHANUMERIC", title: `Alphanumeric sort by Unicode code point. For example, "2" < "A" < "X" < "b" < "z".` },
+            { value: "CASE_INSENSITIVE_ALPHANUMERIC", label: "CASE_INSENSITIVE_ALPHANUMERIC", title: `Case insensitive alphanumeric sort by lower case Unicode code point. For example, "2" < "A" < "b" < "X" < "z".` },
+            // more https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/OrderBy#OrderType
+        ],
+        datetypes: {
+            types: [{
+                label: "value from the list", icon: "fa fa-calendar", options: [
+                    { value: "today", label: "today" },
+                    { value: "yesterday", label: "yesterday" },
+                    { value: "7daysAgo", label: "7daysAgo" },
+                    { value: "30daysAgo", label: "30daysAgo" },
+                ]
+            }, 'str']
+        },
+        minutes: minutesGA,
+    };
+
+    RED.nodes.registerType('Google Analytics', {
+        category: 'Google',
+        color: '#FDF0C2',
+        defaults: {
+            name: { value: "", required: false },
+            ids: {
+                value: "ga:12345678", required: function () {
+                    console.log("registerType:: this:", this);
+                    return false;
+                    return true;
+                }
+            },
+            propertyId: { value: "123456789", required: true },
+            jsonpath: { value: "", required: true },
+            tracker: { value: "", required: true },
+            functions: { value: "", required: true },
+            dimensions: {
+                value: "No Dimensions",
+                validate: RED.validators.typedInput('changeDimensionsType')
+            },
+            changeDimensionsType: { value: "value" },
+            metrics: {
+                value: "ga:pageviews",
+                required: true,
+                validate: RED.validators.typedInput('changeMetricsType')
+            },
+            "start-date": {
+                value: "yesterday",
+                required: true,
+                // validate: RED.validators.typedInput('changeStartDateType')
+            },
+            "end-date": {
+                value: "yesterday",
+                required: true,
+                validate: RED.validators.typedInput('changeEndDateType')
+            },
+            filters: { value: "", required: false },
+            maxResults: { value: "30", required: false },
+            sortResults: { value: "", required: false },
+            metricOrderBy: { value: "No metric", required: false },
+            dimensionOrderBy: { value: "No dimension", required: false },
+            dimensionOrderType: { value: "ORDER_TYPE_UNSPECIFIED", required: false },
+            endMinutesAgo: { value: "0", required: false },
+            startMinutesAgo: { value: "29", required: false },
+            desc: { value: true, required: false },
+            limit: { value: "30", required: false },
+            startDate: { value: "yesterday", required: true },
+            endDate: { value: "today", required: true },
+        },
+        // credentials: {
+        //     Credentials:{value:"", type: "password", required:true},
+        //     AccessToken:{value:"", type: "password", required:true}
+        // },
+        inputs: 1,
+        outputs: 3,
+        inputLabels: "parameter for input",
+        outputLabels: ["formatted result", "response.data.rows", "response.data"],
+        icon: "google-analytics-svgrepo-com.svg",
+        align: "left",
+        label: function () {
+            return this.name || "Google Analytics";
+        },
+        oneditprepare: function () {
+            // console.log("oneditprepare:: this:", this);
+            if (this._def.defaults.tracker == 'UA') {
+                this._def.defaults.ids.required = true;
+                this._def.defaults.propertyId.required = false;
+            }
+            if (this._def.defaults.tracker == 'GA4') {
+                this._def.defaults.propertyId.required = true;
+                this._def.defaults.ids.required = false;
+            }
+
+            $("#node-input-tracker").typedInput({
+                types: [{ label: "Type of GA tracker", icon: "fa fa-tag", options: configGA.trackers }]
+            });
+            $("#node-input-functions").typedInput({
+                types: [{ label: "value from the list", options: configGA.functions.UA.concat(configGA.functions.GA4) }]
+            });
+            $("#node-input-tracker").on("change", function () {
+                // console.log("$(this).val()=", $(this).val());
+                $("#node-input-functions").typedInput('types', [{
+                    label: configGA.versions[$(this).val()],
+                    options: configGA.functions[$(this).val()]
+                }]);
+            });
+
+            $("#node-input-functions").on("change", function (event, type, value) {
+                // console.log("value=", value);
+                $('.sAll').hide();
+                switch (value) {
+
+                    case 'ga':
+                        $("#node-input-metrics").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.metrics.ga }, 'str']);
+                        $("#node-input-dimensions").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.dimensions.ga }, 'str']);
+                        $('.sUAga').show();
+                        break;
+
+                    case 'rt':
+                        $("#node-input-metrics").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.metrics.rt }, 'str']);
+                        $("#node-input-dimensions").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.dimensions.rt }, 'str']);
+                        $('.sUArt').show();
+                        break;
+
+                    case 'runReport':
+                        $("#node-input-metrics").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.metrics.GA4rR }, 'str']);
+                        $("#node-input-dimensions").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.dimensions.GA4rR }, 'str']);
+                        $('.sGA4rR').show();
+                        break;
+
+                    case 'runRealtimeReport':
+                        $("#node-input-metrics").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.metrics.GA4rRR }, 'str']);
+                        $("#node-input-dimensions").typedInput('types',
+                            [{ label: "value from the list", icon: "fa fa-list", options: configGA.dimensions.GA4rRR }, 'str']);
+                        $('.sGA4rRR').show();
+                        break;
+
+                    default: $('.sAll').hide();
+                        break;
+                }
+            });
+
+            $("#node-input-jsonpath").typedInput({ types: [{ label: "*.json", icon: "fa fa-key" }] });
+
+            $("#node-input-dimensions").typedInput({
+                default: "list",
+                // typeField: $("#node-input-changeDimensionsType"),
+                types: [{
+                    label: "value from the list", value: 'list', icon: "fa fa-list", options:
+                        configGA.metrics.ga.concat(
+                            configGA.dimensions.ga,
+                            configGA.dimensions.GA4rR,
+                            configGA.dimensions.GA4rRR
+                        )
+                }, 'str']
+            });
+            $("#node-input-metrics").typedInput({
+                default: "list",
+                // typeField: $("#node-input-changeMetricsType"),
+                types: [{
+                    label: "value from the list", value: 'list', icon: "fa fa-list", options:
+                        configGA.metrics.ga.concat(
+                            configGA.metrics.ga,
+                            configGA.metrics.GA4rR,
+                            configGA.metrics.GA4rRR
+                        )
+                }, 'str']
+            });
+            $("#node-input-metricOrderBy").typedInput({
+                types: [{ label: "value from the list", icon: "fa fa-list", options: configGA.metricOrderBy }, 'str']
+            });
+            $("#node-input-dimensionOrderBy").typedInput({
+                types: [{ label: "value from the list", icon: "fa fa-list", options: configGA.dimensionOrderBy }, 'str']
+            });
+            $("#node-input-dimensionOrderType").typedInput({
+                types: [{ label: "value from the list", icon: "fa fa-sort-numeric-desc", options: configGA.dimensionOrderType }]
+            });
+
+            $("#node-input-startDate").typedInput(configGA.datetypes);
+            $("#node-input-endDate").typedInput(configGA.datetypes);
+            $("#node-input-start-date").typedInput(configGA.datetypes);
+            $("#node-input-end-date").typedInput(configGA.datetypes);
+
+            $("#node-input-endMinutesAgo").typedInput({
+                types: [{ label: "value from the list", icon: "fa fa-clock-o", options: configGA.minutes }]
+            });
+            $("#node-input-startMinutesAgo").typedInput({
+                types: [{ label: "value from the list", icon: "fa fa-clock-o", options: configGA.minutes }]
+            });
+            $("#node-input-desc").typedInput({
+                types: [{ label: "order by", options: [{label: "ASC", value: "ASC"},{label: "DESC", value: "DESC"}] }]
+            });
+            $("#node-input-filters").typedInput({ types: [{ label: "string", icon: "fa fa-filter" }] });
+            $("#node-input-endMinutesAgo").typedInput({ types: ['num'] });
+            $("#node-input-startMinutesAgo").typedInput({ types: ['num'] });
+            $("#node-input-limit").typedInput({ types: ['num'] });
+
+            this.status({ fill: "blue", shape: "ring", text: "Ready..." });
+        },
+    });
+
+</script>
+<script type="text/x-red" data-template-name="Google Analytics">
+    <style>
+        .params .red-ui-typedInput-container {
+            width: 95% !important;
+            border: 1px solid #ccc;
+        }
+    </style>
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+<!-- *** TYPE TRACKER & FUNCTION ************************************ -->
+
+    <div class="form-row" style="display: inline-block; width: 26%;">
+        <label for="tracker-button-group" style="width:100%">
+            <!-- <i class="fa fa-toggle-on"></i> -->
+            GA tracker
+        </label>
+        <input type="text" id="node-input-tracker" style="width: 100%">
+    </div>
+    <div class="form-row" style="display: inline-block; width: 65%; margin-left:2%">
+        <label for="node-input-functions" style="width:100%">
+            <i class="icon-tag"></i>
+            API functions
+        </label>        
+        <input type="text" id="node-input-functions">
+    </div>
+
+<!-- *** TRACKER ID & CREDENTIALS ************************************ -->
+
+    <div class="form-row sAll sUAga sUArt" style="display: inline-block; width: 26%;">
+        <label for="node-input-ids" style="width:100%">
+            Google Analytics UA ids
+        </label>
+        <input type="text" id="node-input-ids" placeholder="ga:12345678" style="width: 100%;">
+    </div>   
+    <div class="form-row sAll sGA4rR sGA4rRR" style="display: inline-block; width: 26%;">
+        <label for="node-input-propertyId" style="width:100%">
+            GA4 Property ID
+        </label>
+        <input type="text" id="node-input-propertyId" placeholder="123456789" style="width: 100%;">
+    </div>
+        <div class="form-row" style="display: inline-block; width: 65%; margin-left:2%">
+            <label for="node-input-jsonpath" style="width:100%">
+                <!-- <i class="fa fa-key"></i> -->
+                Path to Google Credentials *.json
+            </label>        
+            <input type="text" id="node-input-jsonpath" placeholder="path to credentials.json" style="width: 100%;">
+        </div>
+    </div>
+
+<!-- *** METRICS & DIMENSIONS ************************************ -->
+
+    <div class="form-row params" style="width:46%; display: inline-block;">
+        <label for="node-input-dimensions" style="width:100%">
+            <i class="fa"></i>
+            API dimensions
+        </label>        
+        <input type="text" id="node-input-dimensions" placeholder="dimensions">
+        <input type="hidden" id="node-input-changeDimensionsType">
+    </div>
+    <div class="form-row params" style="width:50%; display: inline-block;">
+        <label for="node-input-metrics" style="width:100%">
+            <i class="fa"></i>
+            API metrics
+        </label>        
+        <input type="text" id="node-input-metrics" placeholder="metrics">
+        <input type="hidden" id="node-input-changeMetricsType">
+    </div>
+
+<!-- *** ORDER BY ************************************************** -->
+
+    <div class="form-row sAll sGA4rR sGA4rRR params" style="width:46%; display:inline-block;">
+        <label for="node-input-dimensionOrderBy" style="width:100%">
+            <i class="fa fa-filter" aria-hidden="true"></i>
+            Dimension order by
+        </label>        
+        <input type="text" id="node-input-dimensionOrderBy" placeholder="dimensionOrderBy" style="width: 95%">
+    </div>            
+    <div class="form-row sAll sGA4rR sGA4rRR params" style="width:50%; display:inline-block;">
+        <label for="node-input-metricOrderBy" style="width:100%">
+            <i class="fa fa-filter" aria-hidden="true"></i>
+            Metric order by
+        </label>        
+        <input type="text" id="node-input-metricOrderBy" placeholder="metricOrderBy" style="width: 95%">
+    </div>   
+    <div class="form-row sAll sGA4rR sGA4rRR params" style="width:46%; display:inline-block;">
+        <label for="node-input-dimensionOrderType" style="width:100%">
+            Dimension OrderType
+        </label>        
+        <input type="text" id="node-input-dimensionOrderType" placeholder="dimensionOrderBy OrderType">
+    </div> 
+    <div class="form-row sAll sGA4rR sGA4rRR params" style="width:22%; display:inline-block;">
+        <label for="node-input-desc" style="width:100%">
+            <i class="fa fa-sort-numeric-desc"></i>
+            Order direction
+        </label>        
+        <input type="text" id="node-input-desc">
+    </div>     
+
+<!-- *** StartDate & EndDAte ************************************ -->
+
+    <div class="form-row sAll sGA4rR" style="width:30%">
+        <label for="node-input-startDate" style="width:100%">
+            <i class="icon-tag"></i>
+            startDate (example: yesterday, 2022-08-25)
+        </label>        
+        <input type="text" id="node-input-startDate" placeholder="startDate" style="width:100%;">
+    </div>
+    <div class="form-row sAll sGA4rR" style="width:30%">
+        <label for="node-input-endDate" style="width:100%">
+            <i class="icon-tag"></i>
+            endDate (example: today, 2022-08-26)
+        </label>        
+        <input type="text" id="node-input-endDate" placeholder="endDate" style="width:100%;">
+    </div>    
+
+<!-- *** start-date & end-date *********************************************** -->
+
+    <div class="form-row sAll sUAga" style="width: 30%;">
+        <label for="node-input-start-date" style="width:100%">
+            start-date (example: yesterday, 2022-08-25)
+        </label>        
+        <input type="text" id="node-input-start-date" placeholder="start-date" style="width: 100%; min-width: 50%;">
+    </div>
+    <div class="form-row sAll sUAga" style="width: 30%;">
+        <label for="node-input-end-date" style="width:100%">
+            end-date (example: today, 2022-08-26)
+        </label>        
+        <input type="text" id="node-input-end-date" placeholder="end-date" style="width:100%;">
+    </div>   
+
+<!-- *** FILTERS & MAX Result & SORT *********************************************** -->
+
+    <div class="form-row sAll sUAga sUArt" style="width:60%">
+        <label for="node-input-end-filters" style="width:100%">
+            Filters
+        </label>        
+        <input type="text" id="node-input-filters" placeholder="ga:browser=@Firefox or ga:pagePath!@amp" style="width:100%;">
+    </div>     
+    <div class="form-row sAll sUAga sUArt" style="width:20%">
+        <label for="node-input-end-maxResults" style="width:100%">
+            <i class="icon-tag"></i>
+            Max results
+        </label>        
+        <input type="text" id="node-input-maxResults" placeholder="maxResults" style="width:100%;">
+    </div>    
+    <div class="form-row sAll sUAga sUArt" style="width:60%">
+        <label for="node-input-end-sortResults" style="width:100%">
+            <i class="icon-tag"></i>
+            Sort results
+        </label>        
+        <input type="text" id="node-input-sortResults" placeholder="rt:pageviews or -rt:pageviews" style="width:100%;">
+    </div>   
+
+<!-- *** LIMIT & MINUTES *************************************************** -->
+
+    <div class="form-row sAll sGA4rR sGA4rRR">
+        <div class="form-row sAll sGA4rRR" style="width:30%; display: inline-block;">
+            <label for="node-input-startMinutesAgo" style="width:100%">
+                <!-- <i class="fa fa-clock-o" aria-hidden="true"></i> -->
+                Start minutes ago (max 29)
+            </label>        
+            <input type="text" id="node-input-startMinutesAgo" placeholder="startMinutesAgo">
+        </div>    
+        <div class="form-row sAll sGA4rRR" style="width:30%; display: block;">
+            <label for="node-input-endMinutesAgo" style="width:100%">
+                <!-- <i class="fa fa-clock-o" aria-hidden="true"></i> -->
+                End minutes ago (min 0)
+            </label>        
+            <input type="text" id="node-input-endMinutesAgo" placeholder="endMinutesAgo">
+        </div>    
+        <div class="form-row sAll sGA4rR sGA4rRR" style="width:30%; display: inline-block;">
+            <label for="node-input-limit" style="width:100%">
+                <i class="icon-tag"></i>
+                Limit result rows
+            </label>        
+            <input type="text" id="node-input-limit" placeholder="limit">
+        </div>    
+    </div> 
+
+</script>
+
+<!-- GUIDE: https://nodered.org/docs/creating-nodes/help-style-guide -->
+<script type="text/markdown" data-help-name="Google Analytics">
+Connects to a Google Analytics by API and make request using client interface.
+
+There are 2 types of Google Analytics trackers available: Universal Analytics(UA) and GA4.
+
+4 functions available:
+- Universal Analytics(UA) API v3 ga (by function [ga](https://developers.google.com/analytics/devguides/reporting/core/v3/reference))
+- Universal Analytics(UA) API v3 realtime (by function [Realtime](https://developers.google.com/analytics/devguides/reporting/realtime/v3/reference/data/realtime/get))
+- GA4 API v1 (by function [runReport](https://developers.google.com/analytics/devguides/reporting/data/v1/basics))
+- GA4 API v1 realtime (by function [runRealtimeReport](https://developers.google.com/analytics/devguides/reporting/data/v1/realtime-basics))
+
+### Outputs
+1. Formatted response 
+: payload (```object```)
+
+2. Response.data 
+: payload (```array```)
+
+3. Response 
+: payload (pretty ```json```)
+
+### Details
+
+
+### References
+
+- [GitHub](https://github.com/mdevsmarthome/node-red-contrib-google-analytics-ga) - the nodes github repository
+</script>
