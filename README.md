@@ -27,7 +27,7 @@ Node must have access to GA API by credentials file (_*.json_). Follow the instr
 - Add one(both) of those scopes into your project:
     - *```../auth/analytics```*
     - *```../auth/analytics.readonly```*
-- Create a [service account](https://console.cloud.google.com/apis/credentials) for your project. Create key in **service account** and save credentials file(_*.json_) on your disk ([See step 1 (items 1-7)](https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-php#enable))
+- Create a [service account](https://console.cloud.google.com/apis/credentials) for your project. Create key in **service account** and save credentials file(_*.json_) on your disk ([See items 1-7 on step 1)](https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-php#enable))
 - Add service account (see *client_email* in _*.json_) to Google Analytics account by **Access Management**  ([See paragraph](https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-php#add-user))
 
 ## Usage
