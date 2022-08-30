@@ -18,7 +18,25 @@ From the Node-red:
  2. Search by name 'node-red-contrib-google-analytics-ga'
  3. Choose and press Install button
  4. Use node in **Node-red** from category **Google**
- 5. *Enjoy*
+
+*or* 
+
+1. Make package as *.tgz (for example, preinstall jq)
+ ```
+ curl https://registry.npmjs.org/node-red-contrib-google-analytics-ga/ | jq '.versions[."dist-tags".latest].dist.tarball'
+ ``` 
+
+2. Download the file from the received link to disk
+ ```
+"https://registry.npmjs.org/node-red-contrib-google-analytics-ga/-/node-red-contrib-google-analytics-ga-1.0.0.tgz"
+ ```
+
+3. Upload module tgz file in Node-red
+
+> ![](https://raw.githubusercontent.com/mdevsmarthome/screenshots/main/Node-red/upload-tgz.png?raw=true)
+
+
+ *Enjoy* :)
 
 ## Before you begin
 Node must have access to GA API by credentials file (_*.json_). Follow the instructions for get it:
