@@ -17,7 +17,7 @@ From the Node-red:
  1. Menu / Manage Palette / Install / search modules
  2. Search by name 'node-red-contrib-google-analytics-ga'
  3. Choose and press Install button
- 4. Use nodes in **Node-red** from category **Google Analytics**
+ 4. Use node in **Node-red** from category **Google**
  5. *Enjoy*
 
 ## Before you begin
