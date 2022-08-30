@@ -7,7 +7,7 @@
     "url": "https://github.com/mdevsmarthome/node-red-contrib-google-analytics-ga.git"
   },
   "scripts": {
-    "git-push": "git add -A && git commit -m 'update' && git push origin master",
+    "git-push": "git add -A && git commit -m 'update' && git push origin main",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "node-red": {
