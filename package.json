@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-google-analytics-ga",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Google Analytics UA(v3) & GA4(v1)",
   "repository": {
     "type": "git",
