@@ -11,14 +11,9 @@ module.exports = (RED) => {
 
     const main = function (config) {
         const node = this;
-        // console.log("JS:: node:", node);
-        console.log("JS:: config:", config);
+        // console.log("JS:: config:", config);
 
         RED.nodes.createNode(node, config);
-
-        function TrackerUA_ga(msg, send, done) {
-            console.log("TrackerUA_ga:: ");
-        }
         
         function toConsole(params, response, time, showParams=true, showResponse=false, showRows=false, showValue=true) {
             if (showParams)
@@ -329,16 +324,3 @@ module.exports = (RED) => {
         },
     });
 };
-
-
-
-                    // if (error) {
-                    //     node.log("node.log err=",error);
-                    //     if (done) {
-                    //         // Node-RED 1.0 compatible
-                    //         done(error);
-                    //     } else {
-                    //         // Node-RED 0.x compatible
-                    //         node.error(error, msg);
-                    //     }
-                    // }

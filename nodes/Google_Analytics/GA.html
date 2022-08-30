@@ -196,13 +196,7 @@
         color: '#FDF0C2',
         defaults: {
             name: { value: "", required: false },
-            ids: {
-                value: "ga:12345678", required: function () {
-                    console.log("registerType:: this:", this);
-                    return false;
-                    return true;
-                }
-            },
+            ids: { value: "ga:12345678", required: true },
             propertyId: { value: "123456789", required: true },
             jsonpath: { value: "", required: true },
             tracker: { value: "", required: true },
