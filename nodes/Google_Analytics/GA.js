@@ -34,7 +34,6 @@ module.exports = (RED) => {
             ga: async (msg, send, done) => {
                 try {
                     const ids = config.ids;
-                    const credentialsJsonPath = config.jsonpath;
                     const scopes = [
                         "https://www.googleapis.com/auth/analytics",
                         "https://www.googleapis.com/auth/analytics.readonly"
@@ -46,11 +45,17 @@ module.exports = (RED) => {
                     const filters = config.filters;
                     const maxResults = config.maxResults;
                     const sortResults = config.sortResults;
+
+                    const clientEmail = config.clientEmail;
+                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
+
                     const auth = new google.auth.GoogleAuth({
-                        keyFile: credentialsJsonPath,
+                        credentials: {
+                            client_email: clientEmail,
+                            private_key: privateKey,
+                          },
                         scopes: scopes,
                     });
-
                     google.options({ auth });
 
                     let params = {
@@ -100,7 +105,6 @@ module.exports = (RED) => {
             rt: async (msg, send, done) => {
                 try {
                     const ids = config.ids;
-                    const credentialsJsonPath = config.jsonpath;
                     const scopes = [
                         "https://www.googleapis.com/auth/analytics",
                         "https://www.googleapis.com/auth/analytics.readonly"
@@ -110,8 +114,15 @@ module.exports = (RED) => {
                     const filters = config.filters;
                     const maxResults = config.maxResults;
                     const sortResults = config.sortResults;
+
+                    const clientEmail = config.clientEmail;
+                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
+                    
                     const auth = new google.auth.GoogleAuth({
-                        keyFile: credentialsJsonPath,
+                        credentials: {
+                            client_email: clientEmail,
+                            private_key: privateKey,
+                          },
                         scopes: scopes,
                     });
 
@@ -161,7 +172,6 @@ module.exports = (RED) => {
             runReport: async (msg, send, done) => {
                 try {
                     const propertyId = config.propertyId;
-                    const credentialsJsonPath = config.jsonpath;
                     const dimensions = config.dimensions;
                     const metrics = config.metrics;
                     // const metricOrderBy = config.metricOrderBy;
@@ -177,8 +187,14 @@ module.exports = (RED) => {
                     
                     // Explicitly use service account credentials by specifying
                     // the private key file.
+                    const clientEmail = config.clientEmail;
+                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
+
                     const analyticsDataClient = new BetaAnalyticsDataClient({
-                        keyFilename: `${credentialsJsonPath}`,
+                        credentials: {
+                            client_email: clientEmail,
+                            private_key: privateKey,
+                          },
                     });
     
                     let params = {
@@ -239,7 +255,6 @@ module.exports = (RED) => {
             runRealtimeReport: async (msg, send, done) => {
                 try {
                     const propertyId = config.propertyId;
-                    const credentialsJsonPath = config.jsonpath;
                     const dimensions = config.dimensions;
                     const metrics = config.metrics;
                     // const metricOrderBy = config.metricOrderBy;
@@ -253,8 +268,15 @@ module.exports = (RED) => {
 
                     // Explicitly use service account credentials by specifying
                     // the private key file.
+
+                    const clientEmail = config.clientEmail;
+                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
+                    
                     const analyticsDataClient = new BetaAnalyticsDataClient({
-                        keyFilename: credentialsJsonPath,
+                        credentials: {
+                            client_email: clientEmail,
+                            private_key: privateKey,
+                          },
                     });
 
                     let params = {

@@ -198,7 +198,8 @@
             name: { value: "", required: false },
             ids: { value: "ga:12345678", required: true },
             propertyId: { value: "123456789", required: true },
-            jsonpath: { value: "", required: true },
+            clientEmail: { value: "", required: true },
+            privateKey: { value: "", required: true },
             tracker: { value: "", required: true },
             functions: { value: "", required: true },
             dimensions: {
@@ -314,7 +315,10 @@
                 }
             });
 
-            $("#node-input-jsonpath").typedInput({ types: [{ label: "*.json", icon: "fa fa-key" }] });
+            $("#node-input-clientEmail").typedInput({ types: [{ label: "*", icon: "fa fa-envelope" }] });
+
+            $("#node-input-privateKey").typedInput({ types: [{ label: "*", icon: "fa fa-key" }] });
+
 
             $("#node-input-dimensions").typedInput({
                 default: "list",
@@ -419,11 +423,16 @@
         <input type="text" id="node-input-propertyId" placeholder="123456789" style="width: 100%;">
     </div>
         <div class="form-row" style="display: inline-block; width: 65%; margin-left:2%">
-            <label for="node-input-jsonpath" style="width:100%">
+            <label for="node-input-clientEmail" style="width:100%">
                 <!-- <i class="fa fa-key"></i> -->
-                Path to Google Credentials *.json
+                Google service account email
             </label>        
-            <input type="text" id="node-input-jsonpath" placeholder="path to credentials.json" style="width: 100%;">
+            <input type="text" id="node-input-clientEmail" placeholder="" style="width: 100%;">
+            <label for="node-input-privateKey" style="width:100%">
+                <!-- <i class="fa fa-key"></i> -->
+                Google service account private key
+            </label>        
+            <input type="text" id="node-input-privateKey" placeholder="" style="width: 100%;">
         </div>
     </div>
 
