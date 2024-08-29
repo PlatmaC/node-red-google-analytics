@@ -1,4 +1,7 @@
-# node-red-contrib-google-analytics-ga
+Fork of the node-red-contrib-google-analytics-ga package with changed auth method and some fixes
+[node-red-contrib-google-analytics-ga repository](https://github.com/mdevsmarthome/node-red-contrib-google-analytics-ga.git)
+
+# node-red-google-analytics-ga
 
 A Google Analytics node for Node-red:
  - by API for Universal Analytics (UA) v3

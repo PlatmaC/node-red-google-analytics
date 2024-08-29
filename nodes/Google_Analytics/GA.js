@@ -33,21 +33,21 @@ module.exports = (RED) => {
             // ======== UA ga ===========================================================================================
             ga: async (msg, send, done) => {
                 try {
-                    const ids = config.ids;
+                    const ids =  msg.payload.ids || config.ids;
                     const scopes = [
                         "https://www.googleapis.com/auth/analytics",
                         "https://www.googleapis.com/auth/analytics.readonly"
                     ];
-                    const metrics = config.metrics;
-                    const startDate = config["start-date"];
-                    const endDate = config["end-date"];
-                    const dimensions = config.dimensions;
-                    const filters = config.filters;
-                    const maxResults = config.maxResults;
-                    const sortResults = config.sortResults;
+                    const metrics = msg.payload.metrics || config.metrics;
+                    const startDate = msg.payload["start-date"] || config["start-date"];
+                    const endDate = msg.payload["end-date"] || config["end-date"];
+                    const dimensions = msg.payload.dimensions || config.dimensions;
+                    const filters = msg.payload.filters || config.filters;
+                    const maxResults = msg.payload.maxResults || config.maxResults;
+                    const sortResults = msg.payload.sortResults || config.sortResults;
 
-                    const clientEmail = config.clientEmail;
-                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
+                    const clientEmail = msg.payload.clientEmail || config.clientEmail;
+                    const privateKey = (msg.payload.privateKey || config.privateKey).replace(new RegExp("\\\\n", "\g"), "\n");
 
                     const auth = new google.auth.GoogleAuth({
                         credentials: {
@@ -104,19 +104,20 @@ module.exports = (RED) => {
             // ======== UA rt ===========================================================================================
             rt: async (msg, send, done) => {
                 try {
-                    const ids = config.ids;
+                    const ids = msg.payload.ids || config.ids;
                     const scopes = [
                         "https://www.googleapis.com/auth/analytics",
                         "https://www.googleapis.com/auth/analytics.readonly"
                     ];
-                    const metrics = config.metrics;
-                    const dimensions = config.dimensions;
-                    const filters = config.filters;
-                    const maxResults = config.maxResults;
-                    const sortResults = config.sortResults;
 
-                    const clientEmail = config.clientEmail;
-                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
+                    const metrics = msg.payload.metrics || config.metrics;
+                    const dimensions = msg.payload.dimensions || config.dimensions;
+                    const filters = msg.payload.filters || config.filters;
+                    const maxResults = msg.payload.maxResults || config.maxResults;
+                    const sortResults = msg.payload.sortResults || config.sortResults;
+
+                    const clientEmail = msg.payload.clientEmail || config.clientEmail;
+                    const privateKey = (msg.payload.privateKey || config.privateKey).replace(new RegExp("\\\\n", "\g"), "\n");
                     
                     const auth = new google.auth.GoogleAuth({
                         credentials: {
@@ -171,25 +172,24 @@ module.exports = (RED) => {
             // ======== GA4 runReport ===================================================================================
             runReport: async (msg, send, done) => {
                 try {
-                    const propertyId = config.propertyId;
-                    const dimensions = config.dimensions;
-                    const metrics = config.metrics;
+                    const propertyId = msg.payload.propertyId || config.propertyId;
+                    const dimensions = msg.payload.dimensions || config.dimensions;
+                    const metrics = msg.payload.metrics || config.metrics;
                     // const metricOrderBy = config.metricOrderBy;
                     // const dimensionOrderBy = config.dimensionOrderBy;
-                    const metricOrderBy = config.metricOrderBy;
-                    const dimensionOrderBy = config.dimensionOrderBy;
-                    const dimensionOrderType = config.dimensionOrderType;
-                    const desc = config.desc;
-                    const startDate = config.startDate;
-                    const endDate = config.endDate;
-                    const limit = config.limit;
+                    const metricOrderBy = msg.payload.metricOrderBy || config.metricOrderBy;
+                    const dimensionOrderBy = msg.payload.dimensionOrderBy || config.dimensionOrderBy;
+                    const dimensionOrderType = msg.payload.dimensionOrderType || config.dimensionOrderType;
+                    const desc = msg.payload.desc || config.desc;
+                    const startDate = msg.payload.startDate || config.startDate;
+                    const endDate = msg.payload.endDate || config.endDate;
+                    const limit = msg.payload.limit || config.limit;
                     const offset = ''; //config.offset;
                     
                     // Explicitly use service account credentials by specifying
                     // the private key file.
-                    const clientEmail = config.clientEmail;
-                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
-
+                    const clientEmail = msg.payload.clientEmail || config.clientEmail;
+                    const privateKey = (msg.payload.privateKey || config.privateKey).replace(new RegExp("\\\\n", "\g"), "\n");
                     const analyticsDataClient = new BetaAnalyticsDataClient({
                         credentials: {
                             client_email: clientEmail,
@@ -231,10 +231,10 @@ module.exports = (RED) => {
                     let date_ob = new Date();
                     let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     toConsole(params, response, time, showParams=true, showResponse=false, showRows=false, showValue=true);
-                    msg.payload = response.rows[0].metricValues[0].value;
+                    msg.payload = JSON.stringify(response, null, 2);
 
                     if (done) {
-                        node.send([msg, { payload: response.rows }, { payload: JSON.stringify(response, null, 2) }]);
+                        node.send([msg]);
                         this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
                         done();
                     }
@@ -254,23 +254,27 @@ module.exports = (RED) => {
             // ======== GA4 runRealtimeReport ===========================================================================
             runRealtimeReport: async (msg, send, done) => {
                 try {
-                    const propertyId = config.propertyId;
-                    const dimensions = config.dimensions;
-                    const metrics = config.metrics;
+
+
+                    const propertyId = msg.payload.propertyId || config.propertyId;
+                    const dimensions = msg.payload.dimensions || config.dimensions;
+                    const metrics = msg.payload.metrics || config.metrics;
                     // const metricOrderBy = config.metricOrderBy;
                     // const dimensionOrderBy = config.dimensionOrderBy;
-                    const metricOrderBy = config.metricOrderBy;
-                    const dimensionOrderBy = config.dimensionOrderBy;
-                    const dimensionOrderByOrderType = config.dimensionOrderByOrderType;
-                    const endMinutesAgo = (config.endMinutesAgo == undefined || config.endMinutesAgo == '' || config.endMinutesAgo < 0) ? 0 : config.endMinutesAgo; // 29 
-                    const startMinutesAgo = (config.startMinutesAgo == undefined || config.startMinutesAgo == '' || config.startMinutesAgo > 29) ? 29 : config.startMinutesAgo; // 29 
-                    const limit = config.limit;
-
+                    const metricOrderBy = msg.payload.metricOrderBy || config.metricOrderBy;
+                    const dimensionOrderBy = msg.payload.dimensionOrderBy || config.dimensionOrderBy;
+                    const endMinutesAgoTemp = msg.payload.endMinutesAgo || config.endMinutesAgo;
+                    const startMinutesAgoTemp = msg.payload.startMinutesAgo || config.startMinutesAgo;
+                    const endMinutesAgo = (endMinutesAgoTemp == undefined || endMinutesAgoTemp == '' || endMinutesAgoTemp < 0) ? 0 : endMinutesAgoTemp; // 29 
+                    const startMinutesAgo = (startMinutesAgoTemp == undefined || startMinutesAgoTemp == '' || startMinutesAgoTemp > 29) ? 29 : startMinutesAgoTemp; // 29 
+                    const limit = msg.payload.limit || config.limit;
+                    const offset = ''; //config.offset;
+                    
                     // Explicitly use service account credentials by specifying
                     // the private key file.
+                    const clientEmail = msg.payload.clientEmail || config.clientEmail;
+                    const privateKey = (msg.payload.privateKey || config.privateKey).replace(new RegExp("\\\\n", "\g"), "\n");
 
-                    const clientEmail = config.clientEmail;
-                    const privateKey = config.privateKey.replace(new RegExp("\\\\n", "\g"), "\n");
                     
                     const analyticsDataClient = new BetaAnalyticsDataClient({
                         credentials: {
@@ -312,10 +316,10 @@ module.exports = (RED) => {
                     let date_ob = new Date();
                     let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     toConsole(params, response, time, showParams=true, showResponse=false, showRows=false, showValue=true);
-                     msg.payload = response.rows[0].metricValues[0].value;
+                     msg.payload = JSON.stringify(response, null, 2);
     
                     if (done) {
-                        node.send([msg, { payload: response.rows }, { payload: JSON.stringify(response, null, 2) }]);
+                        node.send([msg]);
                         this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
                         done();
                     }
