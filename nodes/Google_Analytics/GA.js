@@ -81,10 +81,10 @@ module.exports = (RED) => {
                     let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     toConsole(params, response.data, time, showParams=true, showResponse=true, showRows=false, showValue=false);
                     
-                    msg.payload = { totalResults: response.data.totalResults, value: response.data.totalsForAllResults[metrics] };
+                    msg.payload = JSON.stringify(response.data, null, 2);
 
                     if (done) {
-                        node.send([msg, { payload: response.data.rows }, { payload: JSON.stringify(response.data, null, 2) }]);
+                        node.send(msg);
                         this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
                         done();
                     }
@@ -93,11 +93,9 @@ module.exports = (RED) => {
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);
-                    node.send([
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } }
-                    ]);
+                    node.send(
+                       msg
+                    );
                     this.status({ fill: "red", shape:"dot", text: time + error });
                 }
             },
@@ -149,10 +147,10 @@ module.exports = (RED) => {
                     let date_ob = new Date();
                     let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     toConsole(params, response.data, time, showParams=true, showResponse=true, showRows=false, showValue=false);
-                    msg.payload = { totalResults: response.data.totalResults, value: response.data.totalsForAllResults[metrics] };
+                    msg.payload = JSON.stringify(response.data, null, 2);
 
                     if (done) {
-                        node.send([msg, { payload: response.data.rows }, { payload: JSON.stringify(response.data, null, 2) }]);
+                        node.send(msg);
                         this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
                         done();
                     }
@@ -161,11 +159,9 @@ module.exports = (RED) => {
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);
-                    node.send([
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } }
-                    ]);
+                    node.send(
+                       msg
+                    );
                     this.status({ fill: "red", shape:"dot", text: time + error });
                 }
             },
@@ -232,9 +228,8 @@ module.exports = (RED) => {
                     let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     toConsole(params, response, time, showParams=true, showResponse=false, showRows=false, showValue=true);
                     msg.payload = JSON.stringify(response, null, 2);
-
                     if (done) {
-                        node.send([msg]);
+                        node.send(msg);
                         this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
                         done();
                     }
@@ -243,19 +238,13 @@ module.exports = (RED) => {
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);
-                    node.send([
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } }
-                    ]);
+                    node.send(msg);
                     this.status({ fill: "red", shape:"dot", text: time + error });
                 }
             },
             // ======== GA4 runRealtimeReport ===========================================================================
             runRealtimeReport: async (msg, send, done) => {
                 try {
-
-
                     const propertyId = msg.payload.propertyId || config.propertyId;
                     const dimensions = msg.payload.dimensions || config.dimensions;
                     const metrics = msg.payload.metrics || config.metrics;
@@ -319,7 +308,7 @@ module.exports = (RED) => {
                      msg.payload = JSON.stringify(response, null, 2);
     
                     if (done) {
-                        node.send([msg]);
+                        node.send(msg);
                         this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
                         done();
                     }
@@ -327,11 +316,7 @@ module.exports = (RED) => {
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);
-                    node.send([
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } },
-                        { payload: { code: error.code, details: error.details } }
-                    ]);
+                    node.send(msg);
                     this.status({ fill: "red", shape:"dot", text: time + error });
                 }
             },
