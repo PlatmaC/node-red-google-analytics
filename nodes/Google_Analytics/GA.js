@@ -90,6 +90,8 @@ module.exports = (RED) => {
                     }
 
                 } catch (error) {
+                    let date_ob = new Date();
+                    let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);
@@ -156,6 +158,8 @@ module.exports = (RED) => {
                     }
 
                 } catch (error) {
+                    let date_ob = new Date();
+                    let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);
@@ -221,20 +225,27 @@ module.exports = (RED) => {
                         params["limit"] = `${limit}`;
 
                     this.status({ fill: "blue", shape: "dot", text: "Params ready ..." });
-                    const [response] = await analyticsDataClient.runReport(params);
+                    let response;
+                    try{
+                    const [resp] = await analyticsDataClient.runReport(params);
+                    response = resp;
+                    } catch (error) {
+                        throw new Error("Wrong  parameters or no results found")
+                    }
                     this.status({ fill: "green", shape: "ring", text: "Response..." });
-
                     let date_ob = new Date();
                     let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     toConsole(params, response, time, showParams=true, showResponse=false, showRows=false, showValue=true);
                     msg.payload = JSON.stringify(response, null, 2);
                     if (done) {
                         node.send(msg);
-                        this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
+                        this.status({ fill: "green", shape:"dot", text: time + "Success!" });
                         done();
                     }
 
                 } catch (error) {
+                    let date_ob = new Date();
+                    let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);
@@ -299,20 +310,28 @@ module.exports = (RED) => {
                     ];
 
                     this.status({ fill: "blue", shape: "dot", text: "Params ready ..." });
-                    const [response] = await analyticsDataClient.runRealtimeReport(params);
+                    let response;
+                    try{
+                    const [resp] = await analyticsDataClient.runReport(params);
+                    response = resp;
+                    } catch (error) {
+                        throw new Error("Wrong  parameters or no results found");
+                    }
                     this.status({ fill: "green", shape: "ring", text: "Response..." });
 
                     let date_ob = new Date();
                     let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     toConsole(params, response, time, showParams=true, showResponse=false, showRows=false, showValue=true);
-                     msg.payload = JSON.stringify(response, null, 2);
-    
+                    msg.payload = JSON.stringify(response, null, 2);
+                    
                     if (done) {
                         node.send(msg);
-                        this.status({ fill: "green", shape:"dot", text: time + JSON.stringify(msg.payload) });
+                        this.status({ fill: "green", shape:"dot", text: time + "Success!" });
                         done();
                     }
                 } catch (error) {
+                    let date_ob = new Date();
+                    let time = `[${('0' + date_ob.getHours()).slice(-2)}:${('0' + date_ob.getMinutes()).slice(-2)}:${('0' + date_ob.getSeconds()).slice(-2)}] `;
                     console.error("ERROR: ", error);
                     msg.payload = error;
                     node.error(error);

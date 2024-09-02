@@ -1,6 +1,6 @@
 {
   "name": "@platmac/node-red-google-analytics-ga",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Google Analytics UA(v3) & GA4(v1)",
   "repository": {
     "type": "git",
