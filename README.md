@@ -1,64 +1,43 @@
 Fork of the node-red-contrib-google-analytics-ga package with changed auth method and some fixes
 [node-red-contrib-google-analytics-ga repository](https://github.com/mdevsmarthome/node-red-contrib-google-analytics-ga.git)
 
-# node-red-google-analytics-ga
+## Features
 
-A Google Analytics node for Node-red:
- - by API for Universal Analytics (UA) v3
- - by API for GA4 v1
+Run different reports by GA4 and UA Google Analytics API.
+
+## Use cases
+
+1. Automation of running reports and processing them.
+2. Create custom dashboards with metrics necessary just for you.
 
 ## Installation
 
+@platmac/node-red-google-analytics-ga can be install using the node-red editor's pallete or by running npm in the console:
+
 ```
-cd ~/.node-red
-npm i node-red-contrib-google-analytics-ga
+npm i @platmac/node-red-google-analytics-ga
 ```
 *or*
 
 From the Node-red:
 
  1. Menu / Manage Palette / Install / search modules
- 2. Search by name 'node-red-contrib-google-analytics-ga'
+ 2. Search by name '@platmac/node-red-google-analytics-ga'
  3. Choose and press Install button
  4. Use node in **Node-red** from category **Google**
 
-*or* 
 
-1. Make package as *.tgz (for example, preinstall jq)
- ```
- curl https://registry.npmjs.org/node-red-contrib-google-analytics-ga/ | jq '.versions[."dist-tags".latest].dist.tarball'
- ``` 
-
-2. Download the file from the received link to disk
- ```
-"https://registry.npmjs.org/node-red-contrib-google-analytics-ga/-/node-red-contrib-google-analytics-ga-1.0.0.tgz"
- ```
-
-3. Upload module tgz file in Node-red
-
-> ![](https://raw.githubusercontent.com/mdevsmarthome/screenshots/main/Node-red/upload-tgz.png?raw=true)
-
-
- *Enjoy* :)
-
-## Before you begin
+## Setup Google Analytics API connection
 Node must have access to GA API by credentials file (_*.json_). Follow the instructions for get it:
 - Select or create a [Cloud Platform project](https://console.cloud.google.com/project)
 - Enable the [Google Analytics Data API](https://console.cloud.google.com/flows/enableapi?apiid=analyticsdata.googleapis.com). More [Api libraries](https://console.cloud.google.com/apis/library)
-- Add one(both) of those scopes into your project:
+- Add one(both) of those scopes into your project on "Oauth consent screen" page:
     - *```../auth/analytics```*
     - *```../auth/analytics.readonly```*
 - Create a [service account](https://console.cloud.google.com/apis/credentials) for your project. Create key in **service account** and save credentials file(_*.json_) on your disk ([See items 1-7 on step 1](https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-php#enable))
 - Add service account (see *client_email* in _*.json_) to Google Analytics account by **Access Management**  ([See paragraph](https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-php#add-user))
 
 ## Usage
-
-### All nodes have 3 outputs:
- 1. formatted response (```object```)
- 2. response.data (```array```)
- 3. response (pretty```json```)
-
-> ![](https://github.com/mdevsmarthome/screenshots/blob/main/screenshots/GA/GA_node.PNG?raw=true)
 
  ### Node has 4 functions for using:
 
@@ -67,18 +46,27 @@ Node must have access to GA API by credentials file (_*.json_). Follow the instr
  - GA4 API v1 (by function [runReport](https://developers.google.com/analytics/devguides/reporting/data/v1/basics))
  - GA4 API v1 realtime (by function [runRealtimeReport](https://developers.google.com/analytics/devguides/reporting/data/v1/realtime-basics))
 
-> ![](https://github.com/mdevsmarthome/screenshots/blob/main/screenshots/GA/GA_dialog.PNG?raw=true)
+ ### Node input properties: 
 
+ All properties have to be inside **msg.payload** object.
 
-Edit node:
-- input some ID of Google Analytics account
-- input path to credentials file(_*.json_). Please keep this file in a location that is not publicly accessible.
-- fill in the rest of the fields depending on your needs.
-
-## Release
-
-- 2022/08/29: Alpha release v1.0.0
-
-## License
-
-Licensed under the [Apache License, Version 2.0](LICENSE)
+* **ids** - id of property to run UA reports for
+* **propertyId** - id of property to run GA4 reports for
+* **clientEmail** - field from credentials json file
+* **privateKey** - field from credentials json file
+* **dimensions** - the dimensions requested and displayed
+* **metrics** - the metrics requested and displayed.
+* **start-date** - start of report date (YYYY-MM-DD) or templated for UA report
+* **end-date** - end of report date (YYYY-MM-DD) or templated for UA report
+* **filters** - filters for UA report 
+* **maxResults** - the number of rows to return for UA report
+* **sortResults** - sort field for UA report
+* **metricOrderBy** - field to order metric by it
+* **dimensionOrderBy** - field to order dimension by it
+* **dimensionOrderType** - type of order dimension
+* **endMinutesAgo** - end of report date in minutes before report request. Only for realtime reports
+* **startMinutesAgo** - start of report date in minutes before report request. Only for realtime reports
+* **limit** - the number of rows to return. If unspecified, 10,000 rows are returned. The API returns a maximum of 250,000 rows per request, no matter how many you ask for. limit must be positive.
+* **sinceDate** - the date field with templated values and element "custom" that allows to use another way to select date
+* **startDate** - start of report date (YYYY-MM-DD)
+* **endDate** - end of report date (YYYY-MM-DD)

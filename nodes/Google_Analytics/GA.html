@@ -85,6 +85,7 @@
                 { value: "browser", label: "browser", title: "The browsers used to view your website." },
                 { value: "unifiedScreenName", label: "unifiedScreenName", title: "The page title (web) or screen name (app) on which the event was logged." },
                 { value: "pagePath", label: "pagePath", title: "The portion of the URL between the hostname and query string for web pages visited." },
+                { value: "pageTitle", label: "pageTitle", title: "The web page titles used on your site." },
                 { value: "fullPageUrl", label: "fullPageUrl", title: "The hostname, page path, and query string for web pages visited." },
                 { value: "pageReferrer", label: "pageReferrer", title: "The full referring URL including the hostname and path." },
                 { value: "source", label: "source", title: "The source attributed to the conversion event." },
@@ -181,6 +182,7 @@
         datetypes: {
             types: [{
                 label: "value from the list", icon: "fa fa-calendar", options: [
+                    {value: "custom",label: "custom"},
                     { value: "today", label: "today" },
                     { value: "yesterday", label: "yesterday" },
                     { value: "7daysAgo", label: "7daysAgo" },
@@ -232,15 +234,16 @@
             startMinutesAgo: { value: "29", required: false },
             desc: { value: true, required: false },
             limit: { value: "30", required: false },
-            startDate: { value: "yesterday", required: true },
-            endDate: { value: "today", required: true },
+            sinceDate: {value: "today", required: false},
+            startDate: { value: "", required: false },
+            endDate: { value: "", required: false },
         },
         // credentials: {
         //     Credentials:{value:"", type: "password", required:true},
         //     AccessToken:{value:"", type: "password", required:true}
         // },
         inputs: 1,
-        outputs: 3,
+        outputs: 1,
         inputLabels: "parameter for input",
         outputLabels: ["formatted result", "response.data.rows", "response.data"],
         icon: "google-analytics-svgrepo-com.svg",
@@ -353,8 +356,38 @@
                 types: [{ label: "value from the list", icon: "fa fa-sort-numeric-desc", options: configGA.dimensionOrderType }]
             });
 
-            $("#node-input-startDate").typedInput(configGA.datetypes);
-            $("#node-input-endDate").typedInput(configGA.datetypes);
+            $("#node-input-sinceDate").typedInput(
+                {
+                types: [{ label: "", options: configGA.datetypes.types[0].options }]
+            }
+            );
+
+           // $("#node-input-startDate").typedInput(configGA.datetypes);
+
+            //$("#node-input-endDate").typedInput(configGA.datetypes);
+
+
+            $('#node-input-endDate').hide();
+                $(' #node-input-endDate-label').hide();
+                $('#node-input-startDate').hide();
+                    $('#node-input-startDate-label').hide();
+
+
+            $("#node-input-sinceDate").on("change", function (event, type, value) {
+                if (value === configGA.datetypes.types[0].options[0].value) {
+                    $('#node-input-endDate').show();
+                    $('#node-input-endDate-label').show();
+                    $('#node-input-startDate').show();
+                    $('#node-input-startDate-label').show();
+                } else {            $('#node-input-endDate').hide();
+                $(' #node-input-endDate-label').hide();
+                $('#node-input-startDate').hide();
+                    $('#node-input-startDate-label').hide();
+}
+            });
+
+            //change to time range or today/days ago
+
             $("#node-input-start-date").typedInput(configGA.datetypes);
             $("#node-input-end-date").typedInput(configGA.datetypes);
 
@@ -485,24 +518,30 @@
     </div>     
 
 <!-- *** StartDate & EndDAte ************************************ -->
+<div class="form-row sAll sGA4rR" style="width:30%">
+    <label  id="node-input-sinceDate-label" for="node-input-sinceDate" style="width:100%">
+        <i class="icon-tag"></i>
+        sinceDate (example: yesterday)
+    </label>        
+    <input type="text" id="node-input-sinceDate" placeholder="sinceDate" style="width:100%;">
+</div>
 
     <div class="form-row sAll sGA4rR" style="width:30%">
-        <label for="node-input-startDate" style="width:100%">
+        <label  id="node-input-startDate-label" for="node-input-startDate" style="width:100%">
             <i class="icon-tag"></i>
-            startDate (example: yesterday, 2022-08-25)
+            startDate (example: yesterday, 2024-08-25)
         </label>        
         <input type="text" id="node-input-startDate" placeholder="startDate" style="width:100%;">
     </div>
     <div class="form-row sAll sGA4rR" style="width:30%">
-        <label for="node-input-endDate" style="width:100%">
+        <label id="node-input-endDate-label" for="node-input-endDate" style="width:100%">
             <i class="icon-tag"></i>
-            endDate (example: today, 2022-08-26)
+            endDate (example: today, 2024-08-26)
         </label>        
         <input type="text" id="node-input-endDate" placeholder="endDate" style="width:100%;">
     </div>    
 
 <!-- *** start-date & end-date *********************************************** -->
-
     <div class="form-row sAll sUAga" style="width: 30%;">
         <label for="node-input-start-date" style="width:100%">
             start-date (example: yesterday, 2022-08-25)

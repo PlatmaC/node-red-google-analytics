@@ -181,8 +181,30 @@ module.exports = (RED) => {
                     const dimensionOrderBy = msg.payload.dimensionOrderBy || config.dimensionOrderBy;
                     const dimensionOrderType = msg.payload.dimensionOrderType || config.dimensionOrderType;
                     const desc = msg.payload.desc || config.desc;
-                    const startDate = msg.payload.startDate || config.startDate;
-                    const endDate = msg.payload.endDate || config.endDate;
+                    const sinceDate = msg.payload.sinceDate || config.sinceDate;
+                    let startDate = msg.payload.startDate || config.startDate;
+                    let endDate = msg.payload.endDate || config.endDate;
+
+                    if (sinceDate!=="custom") {
+                        startDate = sinceDate;
+                        endDate = new Date().toISOString().split("T")[0];
+                    } else{
+                        const regexpr = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/i;
+                    if (!startDate.match(regexpr) || !endDate.match(regexpr)){
+                        msg.payload.error = "Wrong date!"
+                         node.error(msg.payload.error, msg);
+                                       node.status({ fill: 'red', shape: 'ring', text: 'failed' });
+                                       return;
+                    } else {
+                        if (new Date(endDate).valueOf()< new Date(startDate).valueOf()){
+                                                    msg.payload.error = "Wrong date!"
+                                                    node.error(msg.payload.error, msg);
+                                                                  node.status({ fill: 'red', shape: 'ring', text: 'failed' });
+                                                                  return;                    
+                                                }
+                    }
+                }
+
                     const limit = msg.payload.limit || config.limit;
                     const offset = ''; //config.offset;
                     
